@@ -49,8 +49,12 @@ defmodule MDEx.DeltaConverter do
 
     # Add extra newline between consecutive paragraphs only
     case {node, rest} do
-      {%MDEx.Paragraph{}, [%MDEx.Paragraph{} | _]} ->
-        # Paragraph followed by another paragraph - add extra newline for visual separation
+      {%MDEx.Paragraph{}, [_ | _]} ->
+        # we need a newline after the paragrahp
+        node_ops ++ [%{"insert" => "\n"}] ++ rest_ops
+
+      {_, [%MDEx.Paragraph{} | _]} ->
+        # and before the next paragraph
         node_ops ++ [%{"insert" => "\n"}] ++ rest_ops
 
       _ ->
